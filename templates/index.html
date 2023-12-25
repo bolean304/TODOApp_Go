@@ -1,0 +1,43 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+</head>
+<body>
+    <h1>Task List</h1>
+    <ul>
+        {{range .Tasks}}
+            <li>{{.Description}}</li>
+        {{end}}
+    </ul>
+    <form id="addTaskForm">
+        <label for="description">Add Task:</label>
+        <input type="text" id="description" name="description" required>
+        <button type="button" onclick="addTask()">Add</button>
+    </form>
+
+    <script>
+        function addTask() {
+            var description = document.getElementById("description").value;
+            fetch('/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ description: description }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                document.getElementById("addTaskForm").reset();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
